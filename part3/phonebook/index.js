@@ -11,10 +11,12 @@ app.use(morgan(':method :url :status :res[content-length] - :response-time ms :b
 
 morgan.token('body', req => req.method !== 'POST' ? ' ' : JSON.stringify(req.body))
 
-app.delete('/api/persons/:id', (request, response) => {
-  const id = Number(request.params.id)
-  persons = persons.filter(person => person.id !== id)
-  response.status(204).end()
+app.delete('/api/persons/:id', (request, response, next) => {
+  Person.findByIdAndRemove(request.params.id)
+    .then(result => {
+      response.status(204).end()
+    })
+    .catch(error => next(error))
 })
 
 app.get('/info', (request, response) => {
