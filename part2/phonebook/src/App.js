@@ -61,6 +61,12 @@ const App = () => {
             message: `Added ${returnedPerson.name}`
           })
         })
+        .catch(error => {
+          showNotification({
+            class: 'error',
+            message: error.response.data.error
+          })
+        })
     }
   }
 
