@@ -13,14 +13,18 @@ morgan.token('body', req => req.method !== 'POST' ? ' ' : JSON.stringify(req.bod
 
 app.delete('/api/persons/:id', (request, response, next) => {
   Person.findByIdAndRemove(request.params.id)
-    .then(result => {
+    .then(() => {
       response.status(204).end()
     })
     .catch(error => next(error))
 })
 
-app.get('/info', (request, response) => {
-  response.send(`<p>Phonebook has ${persons.length} people</p><p>${Date()}</p>`)
+app.get('/info', (request, response, next) => {
+  Person.find({})
+    .then(persons => {
+      response.send(`<p>Phonebook has ${persons.length} people</p><p>${Date()}</p>`)
+    })
+    .catch(error => next(error))
 })
 
 app.get('/api/persons', (request, response) => {
@@ -46,11 +50,11 @@ app.post('/api/persons', (request, response, next) => {
 
   if (!body.name) {
     return response.status(400).json({
-      error: "name missing"
+      error: 'name missing'
     })
   } else if (!body.number) {
     return response.status(400).json({
-      error: "number missing"
+      error: 'number missing'
     })
   }
 
@@ -89,7 +93,7 @@ const errorHandler = (error, request, response, next) => {
   } else if (error.name === 'ValidationError') {
     return response.status(400).json({ error: error.message })
   }
-  
+
   next(error)
 }
 
