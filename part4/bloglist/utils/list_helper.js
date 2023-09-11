@@ -14,9 +14,20 @@ const favoriteBlog = (blogs) => {
   }) 
 
   return {
-    'title': favorite.title,
-    'author': favorite.author,
-    'likes': favorite.likes
+    title: favorite.title,
+    author: favorite.author,
+    likes: favorite.likes
+  }
+}
+
+const mostBlogs = (blogs) => {
+  if (blogs.length === 0) {
+    return null
+  }
+  
+  return {
+    author: '',
+    blogs: 0
   }
 }
 
@@ -29,5 +40,6 @@ const totalLikes = (blogs) => {
 module.exports = {
   dummy,
   favoriteBlog,
+  mostBlogs,
   totalLikes
 }
