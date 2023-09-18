@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
   return 1
 }
@@ -24,10 +26,13 @@ const mostBlogs = (blogs) => {
   if (blogs.length === 0) {
     return null
   }
-  
+
+  const blogsByAuthor = _.countBy(blogs, 'author')
+  const mostBlogs = _.max(Object.values(blogsByAuthor))
+
   return {
-    author: '',
-    blogs: 0
+    author: _.find(Object.keys(blogsByAuthor), (author) => { return blogsByAuthor[author] === mostBlogs }),
+    blogs: mostBlogs
   }
 }
 
