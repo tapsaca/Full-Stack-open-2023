@@ -1,3 +1,5 @@
+const Blog = require('../models/blog')
+
 const listWithZeroBlogs = []
 
 const listWithOneBlog = [
