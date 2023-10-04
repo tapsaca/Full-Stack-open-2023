@@ -96,6 +96,19 @@ describe('HTTP POST', () => {
   })
 })
 
+describe('HTTP DELETE', () => {
+  test('deleting a blog succeeds and results in 204 if id is valid', async () => {
+    const blogsAtStart = await helper.blogsInDatabase()
+    const blogToDelete = blogsAtStart[0]
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .expect(204)
+    const blogsAtEnd = await helper.blogsInDatabase()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
+    expect(blogsAtEnd.find(blog => blog.title === blogToDelete.title)).not.toBeDefined()
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
