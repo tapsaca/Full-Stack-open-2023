@@ -109,6 +109,19 @@ describe('HTTP DELETE', () => {
   })
 })
 
+describe('HTTP PUT', () => {
+  test('updating a blog succeeds', async () => {
+    const blogsAtStart = await helper.blogsInDatabase()
+    await api
+      .put(`/api/blogs/${blogsAtStart[0].id}`)
+      .send({ ...blogsAtStart[0], likes: blogsAtStart[0].likes + 1 })
+      .expect(200)
+    const blogsAtEnd = await helper.blogsInDatabase()
+    expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
+    expect(blogsAtEnd.find(blog => blog.id === blogsAtStart[0].id).likes).toBe(blogsAtStart[0].likes + 1)
+  })
+})
+
 afterAll(async () => {
   await mongoose.connection.close()
 })
