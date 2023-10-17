@@ -1,3 +1,11 @@
+const tokenExtractor = (request, response, next) => {
+  const authorization = request.get('authorization')
+  if (authorization && authorization.toLowerCase().startsWith('bearer ')) {
+    request.token = authorization.replace('bearer ', '')
+  }
+  next()
+}
+
 const errorHandler = (error, request, response, next) => {
   if (error.name === 'ValidationError') {
     const messageParts = error.message.split(':')
@@ -12,5 +20,6 @@ const errorHandler = (error, request, response, next) => {
 }
 
 module.exports = {
+  tokenExtractor,
   errorHandler
 }
