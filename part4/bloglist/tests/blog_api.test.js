@@ -3,14 +3,16 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const helper = require('./test_helper')
 
 beforeEach(async () => {
   await Blog.deleteMany({})
+  await User.deleteMany({})
   const blogObjects = helper.listWithManyBlogs.map(blog => new Blog(blog))
   const promiseArray = blogObjects.map(blog => blog.save())
   await Promise.all(promiseArray)
-})
+}, 10000)
 
 describe('HTTP GET', () => {
   test('all blogs are returned', async () => {
@@ -23,7 +25,7 @@ describe('HTTP GET', () => {
       .get('/api/blogs')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  }, 10000)
+  })
   
   test('blogs have a property named id', async () => {
     const response = await api.get('/api/blogs')
@@ -32,6 +34,23 @@ describe('HTTP GET', () => {
 })
 
 describe('HTTP POST', () => {
+  let token
+
+  beforeEach(async () => {
+    const user = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'password'
+    }
+    await api
+      .post('/api/users')
+      .send(user)
+    const response = await api
+      .post('/api/login')
+      .send(user)
+    token = response.body.token
+  })
+
   test('blog is correctly added to the database', async () => {
     const newBlog = {
       title: 'Title',
@@ -41,6 +60,7 @@ describe('HTTP POST', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
@@ -51,6 +71,7 @@ describe('HTTP POST', () => {
     expect(addedBlog.author).toBe('Author')
     expect(addedBlog.url).toBe('http://url.com')
     expect(addedBlog.likes).toBe(1)
+    expect(addedBlog.user).toBeDefined()
   })
 
   test('blog with missing likes property defaults to 0', async () => {
@@ -61,12 +82,26 @@ describe('HTTP POST', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(201)
       .expect('Content-Type', /application\/json/)
     const blogsAtEnd = await helper.blogsInDatabase()
     const addedBlog = blogsAtEnd.find(blog => blog.title === 'No Likes')
     expect(addedBlog.likes).toBe(0)
+  })
+
+  test('results in 401 if token is not provided', async () => {
+    const newBlog = {
+      title: 'Title',
+      author: 'Author',
+      url: 'http://url.com',
+      likes: 1
+    }
+    await api
+      .post('/api/blogs')
+      .send(newBlog)
+      .expect(401)
   })
 
   test('title missing results in bad request', async () => {
@@ -76,6 +111,7 @@ describe('HTTP POST', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(400)
     const blogsAtEnd = await helper.blogsInDatabase()
@@ -89,6 +125,7 @@ describe('HTTP POST', () => {
     }
     await api
       .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
       .send(newBlog)
       .expect(400)
     const blogsAtEnd = await helper.blogsInDatabase()
@@ -97,12 +134,40 @@ describe('HTTP POST', () => {
 })
 
 describe('HTTP DELETE', () => {
+  let token
+
+  beforeEach(async () => {
+    const user = {
+      username: 'root',
+      name: 'Superuser',
+      password: 'password'
+    }
+    await api
+      .post('/api/users')
+      .send(user)
+    const response = await api
+      .post('/api/login')
+      .send(user)
+    token = response.body.token
+  })
+
   test('deleting a blog succeeds and results in 204 if id is valid', async () => {
+    const newBlog = {
+      title: 'Title',
+      author: 'Author',
+      url: 'http://url.com',
+      likes: 1
+    }
+    const response = await api
+      .post('/api/blogs')
+      .set('Authorization', `bearer ${token}`)
+      .send(newBlog)
     const blogsAtStart = await helper.blogsInDatabase()
-    const blogToDelete = blogsAtStart[0]
+    const blogToDelete = response.body
     await api
       .delete(`/api/blogs/${blogToDelete.id}`)
       .expect(204)
+      .set('Authorization', `bearer ${token}`)
     const blogsAtEnd = await helper.blogsInDatabase()
     expect(blogsAtEnd).toHaveLength(blogsAtStart.length - 1)
     expect(blogsAtEnd.find(blog => blog.title === blogToDelete.title)).not.toBeDefined()

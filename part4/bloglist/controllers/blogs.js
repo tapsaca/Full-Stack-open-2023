@@ -8,6 +8,11 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const blog = new Blog(request.body)
+  if (!request.user) {
+    return response.status(401).json({
+      error: 'invalid or missing token'
+    })
+  }
   const user = request.user
   blog.user = user.id
   const savedBlog = await blog.save()
@@ -18,6 +23,11 @@ blogsRouter.post('/', async (request, response) => {
 
 blogsRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
+  if (!request.user) {
+    return response.status(401).json({
+      error: 'invalid or missing token'
+    })
+  }
   const user = request.user
   if (blog.user.toString() === user._id.toString()) {
     await Blog.findByIdAndDelete(request.params.id)
@@ -26,7 +36,7 @@ blogsRouter.delete('/:id', async (request, response) => {
     response.status(204).end()
   } else {
     response.status(401).json({
-      error: 'Unauthorized action.'
+      error: 'unauthorized action'
     })
   }
 })
