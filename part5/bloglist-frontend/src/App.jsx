@@ -1,10 +1,12 @@
 import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
+import Notification from './components/Notification'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
+  const [notification, setNotification] = useState({ class: null, message: null })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -37,8 +39,9 @@ const App = () => {
     try {
       const addedBlog = await blogService.create(newBlog)
       setBlogs(blogs.concat(addedBlog))
+      showNotification({ class: 'notification', message: `Blog '${addedBlog.title}' added` })
     } catch (exception) {
-      console.log(exception)
+      showNotification({ class: 'error', message: 'Adding a new blog failed' })
     }
   }
 
@@ -51,8 +54,9 @@ const App = () => {
       setUser(loggedUser)
       setUsername('')
       setPassword('')
+      showNotification({ class: 'notification', message: `Hello ${loggedUser.name}` })
     } catch (exception) {
-      console.log(exception)
+      showNotification({ class: 'error', message: 'Login failed' })
     }
   }
 
@@ -62,10 +66,18 @@ const App = () => {
     setUser(null)
   }
 
+  const showNotification = (notification) => {
+    setNotification(notification)
+    setTimeout(() => {
+      setNotification({ class: null, message: null })
+    }, 3000)
+  }
+
   if (user === null) {
     return (
       <div>
         <h2>Log in to application</h2>
+        <Notification className={notification.class} message={notification.message} />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -94,6 +106,7 @@ const App = () => {
   return (
     <div>
       <h2>Blogs</h2>
+      <Notification className={notification.class} message={notification.message} />
       <p>{user.name} logged in</p>
       <button onClick={handleLogout}>logout</button>
       <form onSubmit={addBlog}>
