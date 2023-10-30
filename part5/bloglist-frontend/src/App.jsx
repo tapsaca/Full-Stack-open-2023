@@ -1,18 +1,18 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+  const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState({ class: null, message: null })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -29,15 +29,10 @@ const App = () => {
     }
   }, [])
 
-  const addBlog = async (event) => {
-    event.preventDefault()
-    const newBlog = {
-      title: title,
-      author: author,
-      url: url
-    }
+  const createBlog = async (blogObject) => {
+    blogFormRef.current.toggleVisibility()
     try {
-      const addedBlog = await blogService.create(newBlog)
+      const addedBlog = await blogService.create(blogObject)
       setBlogs(blogs.concat(addedBlog))
       showNotification({ class: 'notification', message: `Blog '${addedBlog.title}' added` })
     } catch (exception) {
@@ -76,11 +71,11 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <h2>Log in to application</h2>
+        <h1>Login to BlogList</h1>
         <Notification className={notification.class} message={notification.message} />
         <form onSubmit={handleLogin}>
           <div>
-            username
+            Username
             <input
               type='text'
               value={username}
@@ -89,7 +84,7 @@ const App = () => {
             />
           </div>
           <div>
-            password
+            Password
             <input
               type='password'
               value={password}
@@ -97,7 +92,7 @@ const App = () => {
               onChange={({ target }) => setPassword(target.value)}
             />
           </div>
-          <button type ='submit'>login</button>
+          <button type ='submit'>Login</button>
         </form>
       </div>
     )
@@ -105,40 +100,15 @@ const App = () => {
 
   return (
     <div>
-      <h2>Blogs</h2>
+      <h1>Blogs</h1>
       <Notification className={notification.class} message={notification.message} />
-      <p>{user.name} logged in</p>
-      <button onClick={handleLogout}>logout</button>
-      <form onSubmit={addBlog}>
-        <div>
-          title
-          <input
-            type='text'
-            value={title}
-            name='Title'
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          author
-          <input
-            type='text'
-            value={author}
-            name='Title'
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          url
-          <input
-            type='text'
-            value={url}
-            name='Title'
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type='submit'>create</button>
-      </form>
+      <div>
+        <p>User: {user.name}</p>
+        <button onClick={handleLogout}>Logout</button>
+      </div>
+      <Togglable buttonLabel='Add a new blog' ref={blogFormRef}>
+        <BlogForm createBlog={createBlog} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
