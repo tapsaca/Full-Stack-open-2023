@@ -33,6 +33,7 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       const addedBlog = await blogService.create(blogObject)
+      addedBlog.user = { name: user.name }
       setBlogs(blogs.concat(addedBlog))
       showNotification({ class: 'notification', message: `Blog '${addedBlog.title}' added` })
     } catch (exception) {

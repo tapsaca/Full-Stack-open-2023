@@ -10,11 +10,11 @@ const Blog = ({ blog }) => {
 
   return (
     <div className='blog'>
-      <div>{blog.title} <button onClick={toggleVisibility}>{visible ? 'Hide' : 'View'}</button></div>
+      <div>{blog.title}, {blog.author} <button onClick={toggleVisibility}>{visible ? 'Hide' : 'View'}</button></div>
       <div style={showWhenVisible}>
         <div>{blog.url}</div>
         <div>{blog.likes} <button>Like</button></div>
-        <div>{blog.author}</div>
+        <div>{blog.user.name}</div>
       </div>
     </div>
   )
