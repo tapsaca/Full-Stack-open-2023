@@ -33,11 +33,23 @@ const App = () => {
     blogFormRef.current.toggleVisibility()
     try {
       const addedBlog = await blogService.create(blogObject)
-      addedBlog.user = { name: user.name }
+      addedBlog.user = { name: user.name, username: user.username }
       setBlogs(blogs.concat(addedBlog))
       showNotification({ class: 'notification', message: `Blog '${addedBlog.title}' added` })
     } catch (exception) {
       showNotification({ class: 'error', message: 'Adding a new blog failed' })
+    }
+  }
+
+  const deleteBlog = async (blogObject) => {
+    try {
+      if (window.confirm(`Delete blog '${blogObject.title}'`)) {
+        await blogService.deleteObject(blogObject.id)
+        setBlogs(blogs.filter(blog => blog.id !== blogObject.id))
+        showNotification({ class: 'notification', message: `Blog '${blogObject.title}' deleted` })
+      }
+    } catch (exception) {
+      showNotification({ class: 'error', message: 'Deletion failed' })
     }
   }
 
@@ -117,7 +129,7 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs.sort((b1, b2) => b2.likes - b1.likes).map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlog={updateBlog} />
+        <Blog key={blog.id} blog={blog} deleteBlog={deleteBlog} updateBlog={updateBlog} user={user} />
       )}
     </div>
   )
