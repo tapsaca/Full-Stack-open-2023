@@ -17,7 +17,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs )
-    )  
+    )
   }, [])
 
   useEffect(() => {
@@ -83,7 +83,7 @@ const App = () => {
 
   const updateBlog = async (id, blogObject) => {
     const updatedBlog = await blogService.update(id, blogObject)
-    updatedBlog.user = { name: user.name }
+    updatedBlog.user = { name: user.name, username: user.username }
     setBlogs(blogs.map(blog => blog.id !== updatedBlog.id ? blog : updatedBlog ))
   }
 

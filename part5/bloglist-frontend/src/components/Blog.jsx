@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 const Blog = ({ blog, deleteBlog, updateBlog, user }) => {
   const [visible, setVisible] = useState(false)
-  const showWhenOwner = { display: user.username === blog.user.username ? '' : 'none'}
+  const showWhenOwner = { display: user.username === blog.user.username ? '' : 'none' }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
   const addLike = (event) => {
@@ -15,7 +15,7 @@ const Blog = ({ blog, deleteBlog, updateBlog, user }) => {
       user: blog.user.id
     })
   }
-  
+
   const toggleVisibility = () => {
     setVisible(!visible)
   }
