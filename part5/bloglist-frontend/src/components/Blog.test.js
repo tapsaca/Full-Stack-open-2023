@@ -20,8 +20,18 @@ describe('<Blog />', () => {
     username: 'username'
   }
 
+  const mockHandler = jest.fn()
+
   beforeEach(() => {
-    render(<Blog blog={blog} user={user} />)
+    render(<Blog blog={blog} user={user} updateBlog={mockHandler} />)
+  })
+
+  test('event handler function is called twice when like button is pressed twice', async () => {
+    const user = userEvent.setup()
+    const button = screen.getByText('Like')
+    await user.click(button)
+    await user.click(button)
+    expect(mockHandler.mock.calls).toHaveLength(2)
   })
 
   test('renders title and author but no URL or likes', () => {
