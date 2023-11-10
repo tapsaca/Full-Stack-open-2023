@@ -12,12 +12,7 @@ describe('Blog app', function() {
 
   describe('Login', function() {
     beforeEach(function() {
-      const user = {
-        name: 'Superuser',
-        username: 'root',
-        password: 'secret'
-      }
-      cy.request('POST', 'http://localhost:3003/api/users/', user)
+      cy.createUser({ name: 'Superuser', username: 'root', password: 'secret' })
     })
 
     it('succeeds with correct credentials', function() {
@@ -35,6 +30,25 @@ describe('Blog app', function() {
         .should('contain', 'Login failed')
         .and('have.css', 'color', 'rgb(255, 0, 0)')
       cy.get('html').should('not.contain', 'Hello Superuser')
+    })
+  })
+
+  describe('When logged in', function() {
+    beforeEach(function() {
+      cy.createUser({ name: 'Superuser', username: 'root', password: 'secret' })
+      cy.login({ username: 'root', password: 'secret' })
+    })
+
+    it('a blog can be created', function() {
+      cy.contains('Add a new blog').click()
+      cy.get('#title').type('Title')
+      cy.get('#author').type('Author')
+      cy.get('#url').type('URL')
+      cy.contains('Save').click()
+      cy.get('.notification')
+        .should('contain', 'Blog \'Title\' added')
+        .and('have.css', 'color', 'rgb(0, 128, 0)')
+      cy.contains('Title, Author')
     })
   })
 })
