@@ -1,7 +1,7 @@
 describe('Blog app', function() {
   beforeEach(function() {
-    cy.request('POST', 'http://localhost:3003/api/testing/reset')
-    cy.visit('http://localhost:5173')
+    cy.request('POST', `${Cypress.env('BACKEND')}/testing/reset`)
+    cy.visit('')
   })
 
   it('Login form is shown', function() {
@@ -49,6 +49,19 @@ describe('Blog app', function() {
         .should('contain', 'Blog \'Title\' added')
         .and('have.css', 'color', 'rgb(0, 128, 0)')
       cy.contains('Title, Author')
+    })
+
+    describe('and a blog exists', function() {
+      beforeEach(function() {
+        cy.createBlog({ title: 'Title', author: 'Author', url: 'URL' })
+      })
+
+      it('user can like a blog', function() {
+        cy.contains('View').click()
+        cy.contains('0')
+        cy.contains('Like').click()
+        cy.contains('1')
+      })
     })
   })
 })

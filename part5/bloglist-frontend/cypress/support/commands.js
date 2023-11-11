@@ -30,15 +30,27 @@ Cypress.Commands.add('createUser', ({ name, username, password }) => {
     username,
     password
   }
-  cy.request('POST', 'http://localhost:3003/api/users/', user)
+  cy.request('POST', `${Cypress.env('BACKEND')}/users`, user)
 })
 
 Cypress.Commands.add('login', ({ username, password }) => {
-  cy.request('POST', 'http://localhost:3003/api/login', {
+  cy.request('POST', `${Cypress.env('BACKEND')}/login`, {
     username,
     password
   }).then(({ body }) => {
     localStorage.setItem('loggedUser', JSON.stringify(body))
-    cy.visit('http://localhost:5173')
+    cy.visit('')
   })
+})
+
+Cypress.Commands.add('createBlog', ({ title, author, url }) => {
+  cy.request({
+    url: `${Cypress.env('BACKEND')}/blogs`,
+    method: 'POST',
+    body: { title, author, url },
+    headers: {
+      'Authorization': `bearer ${JSON.parse(localStorage.getItem('loggedUser')).token}`
+    }
+  })
+  cy.visit('')
 })
