@@ -62,6 +62,15 @@ describe('Blog app', function() {
         cy.contains('Like').click()
         cy.contains('1')
       })
+
+      it('user who created the blog can delete it', function() {
+        cy.contains('View').click()
+        cy.contains('Delete').click()
+        cy.get('.notification')
+          .should('contain', 'Blog \'Title\' deleted')
+          .and('have.css', 'color', 'rgb(0, 128, 0)')
+        cy.get('html').should('not.contain', 'Title, Author')
+      })
     })
   })
 })
