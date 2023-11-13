@@ -71,6 +71,14 @@ describe('Blog app', function() {
           .and('have.css', 'color', 'rgb(0, 128, 0)')
         cy.get('html').should('not.contain', 'Title, Author')
       })
+
+      it('user cannot see the delete button if they did not create the blog', function() {
+        cy.contains('Logout').click()
+        cy.createUser({ name: 'Tapio', username: 'tapsaca', password: 'password' })
+        cy.login({ username: 'tapsaca', password: 'password' })
+        cy.contains('View').click()
+        cy.contains('Delete').should('not.be.visible')
+      })
     })
   })
 })
