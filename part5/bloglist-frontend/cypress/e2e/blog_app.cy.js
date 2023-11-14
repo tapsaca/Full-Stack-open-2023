@@ -80,5 +80,29 @@ describe('Blog app', function() {
         cy.contains('Delete').should('not.be.visible')
       })
     })
+
+    describe('and multiple blogs exist', function() {
+      beforeEach(function() {
+        cy.createBlog({ title: 'Least likes', author: 'Author', url: 'URL' })
+        cy.createBlog({ title: 'Most likes', author: 'Author', url: 'URL' })
+        cy.createBlog({ title: 'Average likes', author: 'Author', url: 'URL' })
+      })
+
+      it('blogs are in descending order based on likes', function() {
+        cy.contains('Most likes, Author').contains('View').click()
+        cy.wait(1000)
+        cy.contains('Most likes, Author').parent().contains('Like').click()
+        cy.wait(1000)
+        cy.contains('Most likes, Author').parent().contains('Like').click()
+        cy.wait(1000)
+        cy.contains('Average likes, Author').contains('View').click()
+        cy.wait(1000)
+        cy.contains('Average likes, Author').parent().contains('Like').click()
+        cy.wait(1000)
+        cy.get('.blog').eq(0).should('contain', 'Most likes, Author')
+        cy.get('.blog').eq(1).should('contain', 'Average likes, Author')
+        cy.get('.blog').eq(2).should('contain', 'Least likes, Author')
+      })
+    })
   })
 })
