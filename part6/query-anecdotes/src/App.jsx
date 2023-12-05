@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
+import { getAnecdotes } from './requests'
 
 const App = () => {
   const handleVote = (anecdote) => {
@@ -10,7 +10,7 @@ const App = () => {
 
   const result = useQuery({
     queryKey: ['anecdotes'],
-    queryFn: () => axios.get('http://localhost:3001/anecdotes').then(response => response.data)
+    queryFn: getAnecdotes
   })
 
   if (result.isLoading) {
