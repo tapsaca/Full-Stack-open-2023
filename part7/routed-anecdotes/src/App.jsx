@@ -30,11 +30,15 @@ const App = () => {
     ? anecdotes.find(anecdote => anecdote.id === Number(match.params.id))
     : null
 
-  //const [notification, setNotification] = useState('')
+  const [notification, setNotification] = useState('')
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000)
     setAnecdotes(anecdotes.concat(anecdote))
+    setNotification(`Anecdote '${anecdote.content}' was created.`)
+    setTimeout(() => {
+      setNotification('')
+    }, 5000)
   }
 
   /*
@@ -55,6 +59,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification}
       <Routes>
         <Route path='/' element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route path='/about' element={<About />} />
