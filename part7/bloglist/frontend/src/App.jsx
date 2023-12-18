@@ -1,20 +1,20 @@
-import { useEffect, useRef, useState } from "react"
-import Blog from "./components/Blog"
-import BlogForm from "./components/BlogForm"
-import Notification from "./components/Notification"
-import Togglable from "./components/Togglable"
-import blogService from "./services/blogs"
-import loginService from "./services/login"
+import { useEffect, useRef, useState } from 'react'
+import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import Notification from './components/Notification'
+import Togglable from './components/Togglable'
+import blogService from './services/blogs'
+import loginService from './services/login'
 
 const App = () => {
   const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
   const [notification, setNotification] = useState({
     class: null,
-    message: null,
+    message: null
   })
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
@@ -22,7 +22,7 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedUser")
+    const loggedUserJSON = window.localStorage.getItem('loggedUser')
     if (loggedUserJSON) {
       const loggedUser = JSON.parse(loggedUserJSON)
       blogService.setToken(loggedUser.token)
@@ -37,11 +37,11 @@ const App = () => {
       addedBlog.user = { name: user.name, username: user.username }
       setBlogs(blogs.concat(addedBlog))
       showNotification({
-        class: "notification",
-        message: `Blog '${addedBlog.title}' added`,
+        class: 'notification',
+        message: `Blog '${addedBlog.title}' added`
       })
     } catch (exception) {
-      showNotification({ class: "error", message: "Adding a new blog failed" })
+      showNotification({ class: 'error', message: 'Adding a new blog failed' })
     }
   }
 
@@ -51,12 +51,12 @@ const App = () => {
         await blogService.deleteObject(blogObject.id)
         setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
         showNotification({
-          class: "notification",
-          message: `Blog '${blogObject.title}' deleted`,
+          class: 'notification',
+          message: `Blog '${blogObject.title}' deleted`
         })
       }
     } catch (exception) {
-      showNotification({ class: "error", message: "Deletion failed" })
+      showNotification({ class: 'error', message: 'Deletion failed' })
     }
   }
 
@@ -64,23 +64,23 @@ const App = () => {
     event.preventDefault()
     try {
       const loggedUser = await loginService.login({ username, password })
-      window.localStorage.setItem("loggedUser", JSON.stringify(loggedUser))
+      window.localStorage.setItem('loggedUser', JSON.stringify(loggedUser))
       blogService.setToken(loggedUser.token)
       setUser(loggedUser)
-      setUsername("")
-      setPassword("")
+      setUsername('')
+      setPassword('')
       showNotification({
-        class: "notification",
-        message: `Hello ${loggedUser.name}`,
+        class: 'notification',
+        message: `Hello ${loggedUser.name}`
       })
     } catch (exception) {
-      showNotification({ class: "error", message: "Login failed" })
+      showNotification({ class: 'error', message: 'Login failed' })
     }
   }
 
   const handleLogout = (event) => {
     event.preventDefault()
-    window.localStorage.removeItem("loggedUser")
+    window.localStorage.removeItem('loggedUser')
     setUser(null)
   }
 
@@ -95,7 +95,7 @@ const App = () => {
     const updatedBlog = await blogService.update(id, blogObject)
     updatedBlog.user = { name: user.name, username: user.username }
     setBlogs(
-      blogs.map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog)),
+      blogs.map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog))
     )
   }
 
