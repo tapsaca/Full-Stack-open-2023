@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { addBlog, initializeBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 import blogService from './services/blogs'
 import loginService from './services/login'
@@ -11,14 +12,14 @@ import loginService from './services/login'
 const App = () => {
   const blogFormRef = useRef()
   const dispatch = useDispatch()
-  const [blogs, setBlogs] = useState([])
+  const blogs = useSelector((state) => state.blogs)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   useEffect(() => {
-    blogService.getAll().then((blogs) => setBlogs(blogs))
-  }, [])
+    dispatch(initializeBlogs())
+  }, [dispatch])
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem('loggedUser')
@@ -32,13 +33,11 @@ const App = () => {
   const createBlog = async (blogObject) => {
     blogFormRef.current.toggleVisibility()
     try {
-      const addedBlog = await blogService.create(blogObject)
-      addedBlog.user = { name: user.name, username: user.username }
-      setBlogs(blogs.concat(addedBlog))
+      dispatch(addBlog(blogObject, user))
       dispatch(
         setNotification({
           class: 'notification',
-          message: `Blog ${addedBlog.title} added`
+          message: `Blog ${blogObject.title} added`
         })
       )
     } catch (exception) {
@@ -51,27 +50,27 @@ const App = () => {
     }
   }
 
-  const deleteBlog = async (blogObject) => {
-    try {
-      if (window.confirm(`Delete blog '${blogObject.title}'`)) {
-        await blogService.deleteObject(blogObject.id)
-        setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-        dispatch(
-          setNotification({
-            class: 'notification',
-            message: `Blog '${blogObject.title}' deleted`
-          })
-        )
-      }
-    } catch (exception) {
-      dispatch(
-        setNotification({
-          class: 'error',
-          message: 'Deletion failed'
-        })
-      )
-    }
-  }
+  // const deleteBlog = async (blogObject) => {
+  //   try {
+  //     if (window.confirm(`Delete blog '${blogObject.title}'`)) {
+  //       await blogService.deleteObject(blogObject.id)
+  //       setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
+  //       dispatch(
+  //         setNotification({
+  //           class: 'notification',
+  //           message: `Blog '${blogObject.title}' deleted`
+  //         })
+  //       )
+  //     }
+  //   } catch (exception) {
+  //     dispatch(
+  //       setNotification({
+  //         class: 'error',
+  //         message: 'Deletion failed'
+  //       })
+  //     )
+  //   }
+  // }
 
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -104,13 +103,13 @@ const App = () => {
     setUser(null)
   }
 
-  const updateBlog = async (id, blogObject) => {
-    const updatedBlog = await blogService.update(id, blogObject)
-    updatedBlog.user = { name: user.name, username: user.username }
-    setBlogs(
-      blogs.map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog))
-    )
-  }
+  // const updateBlog = async (id, blogObject) => {
+  //   const updatedBlog = await blogService.update(id, blogObject)
+  //   updatedBlog.user = { name: user.name, username: user.username }
+  //   setBlogs(
+  //     blogs.map((blog) => (blog.id !== updatedBlog.id ? blog : updatedBlog))
+  //   )
+  // }
 
   if (user === null) {
     return (
@@ -156,13 +155,14 @@ const App = () => {
         <BlogForm createBlog={createBlog} />
       </Togglable>
       {blogs
+        .slice()
         .sort((b1, b2) => b2.likes - b1.likes)
         .map((blog) => (
           <Blog
             key={blog.id}
             blog={blog}
-            deleteBlog={deleteBlog}
-            updateBlog={updateBlog}
+            deleteBlog={() => console.log('Delete')}
+            updateBlog={() => console.log('Update')}
             user={user}
           />
         ))}
