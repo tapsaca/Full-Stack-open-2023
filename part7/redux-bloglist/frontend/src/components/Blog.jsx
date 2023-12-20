@@ -1,21 +1,35 @@
 import { useState } from 'react'
+import { useDispatch } from 'react-redux'
+import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
 
-const Blog = ({ blog, deleteBlog, updateBlog, user }) => {
+const Blog = ({ blog, user }) => {
+  const dispatch = useDispatch()
   const [visible, setVisible] = useState(false)
   const showWhenOwner = {
     display: user.username === blog.user.username ? '' : 'none'
   }
   const showWhenVisible = { display: visible ? '' : 'none' }
 
-  const addLike = (event) => {
+  const handleDelete = (event) => {
     event.preventDefault()
-    updateBlog(blog.id, {
-      title: blog.title,
-      author: blog.author,
-      url: blog.url,
-      likes: blog.likes + 1,
-      user: blog.user.id
-    })
+    event.preventDefault()
+    try {
+      dispatch(deleteBlog(blog.id))
+      dispatch(
+        setNotification({
+          class: 'notification',
+          message: `Blog '${blog.title}' deleted`
+        })
+      )
+    } catch (exception) {
+      dispatch(setNotification({ class: 'error', message: 'Deletion failed' }))
+    }
+  }
+
+  const handleLike = (event) => {
+    event.preventDefault()
+    dispatch(likeBlog(blog))
   }
 
   const toggleVisibility = () => {
@@ -31,11 +45,11 @@ const Blog = ({ blog, deleteBlog, updateBlog, user }) => {
       <div style={showWhenVisible}>
         <div>{blog.url}</div>
         <div>
-          {blog.likes} <button onClick={addLike}>Like</button>
+          {blog.likes} <button onClick={handleLike}>Like</button>
         </div>
         <div>{blog.user.name}</div>
         <div style={showWhenOwner}>
-          <button onClick={() => deleteBlog(blog)}>Delete</button>
+          <button onClick={handleDelete}>Delete</button>
         </div>
       </div>
     </div>
