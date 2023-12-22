@@ -1,15 +1,15 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import Blog from './components/Blog'
-import BlogForm from './components/BlogForm'
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
 import { initializeUser, logout } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
-  const blogs = useSelector((state) => state.blogs)
   const user = useSelector((state) => state.user)
 
   useEffect(() => {
@@ -40,13 +40,12 @@ const App = () => {
         <p>User: {user.name}</p>
         <button onClick={handleLogout}>Logout</button>
       </div>
-      <BlogForm user={user} />
-      {blogs
-        .slice()
-        .sort((b1, b2) => b2.likes - b1.likes)
-        .map((blog) => (
-          <Blog key={blog.id} blog={blog} user={user} />
-        ))}
+      <Router>
+        <Routes>
+          <Route path="/" element={<BlogList />} />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </Router>
     </div>
   )
 }
