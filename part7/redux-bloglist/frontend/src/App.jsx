@@ -4,9 +4,11 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import User from './components/User'
 import Users from './components/Users'
 import { initializeBlogs } from './reducers/blogReducer'
-import { initializeUser, logout } from './reducers/userReducer'
+import { initializeUser, logout } from './reducers/loginReducer'
+import { initializeUsers } from './reducers/userReducer'
 
 const App = () => {
   const dispatch = useDispatch()
@@ -15,6 +17,7 @@ const App = () => {
   useEffect(() => {
     dispatch(initializeUser())
     dispatch(initializeBlogs())
+    dispatch(initializeUsers())
   }, [dispatch])
 
   const handleLogout = (event) => {
@@ -44,6 +47,7 @@ const App = () => {
         <Routes>
           <Route path="/" element={<BlogList />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/users/:id" element={<User />} />
         </Routes>
       </Router>
     </div>
