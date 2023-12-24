@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom'
+import BlogDetails from './components/BlogDetails'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
@@ -37,7 +38,7 @@ const App = () => {
 
   return (
     <div>
-      <h1>Blogs</h1>
+      <h1>Bloglist</h1>
       <Notification />
       <div>
         <p>User: {user.name}</p>
@@ -46,6 +47,7 @@ const App = () => {
       <Router>
         <Routes>
           <Route path="/" element={<BlogList />} />
+          <Route path="/blogs/:id" element={<BlogDetails />} />
           <Route path="/users" element={<Users />} />
           <Route path="/users/:id" element={<User />} />
         </Routes>
