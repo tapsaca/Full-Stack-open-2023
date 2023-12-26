@@ -3,16 +3,14 @@ import Blog from './components/Blog'
 import BlogForm from './components/BlogForm'
 import Notification from './components/Notification'
 import Togglable from './components/Togglable'
+import { useNotificationDispatch } from './NotificationContext'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
 const App = () => {
+  const dispatch = useNotificationDispatch()
   const blogFormRef = useRef()
   const [blogs, setBlogs] = useState([])
-  const [notification, setNotification] = useState({
-    class: null,
-    message: null
-  })
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
@@ -36,12 +34,24 @@ const App = () => {
       const addedBlog = await blogService.create(blogObject)
       addedBlog.user = { name: user.name, username: user.username }
       setBlogs(blogs.concat(addedBlog))
-      showNotification({
-        class: 'notification',
-        message: `Blog '${addedBlog.title}' added`
+      dispatch({
+        type: 'SHOW',
+        payload: {
+          class: 'notification',
+          message: `Blog '${blogObject.title}' added`
+        }
       })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
     } catch (exception) {
-      showNotification({ class: 'error', message: 'Adding a new blog failed' })
+      dispatch({
+        type: 'SHOW',
+        payload: { class: 'error', message: 'Adding a new blog failed' }
+      })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
     }
   }
 
@@ -50,13 +60,25 @@ const App = () => {
       if (window.confirm(`Delete blog '${blogObject.title}'`)) {
         await blogService.deleteObject(blogObject.id)
         setBlogs(blogs.filter((blog) => blog.id !== blogObject.id))
-        showNotification({
-          class: 'notification',
-          message: `Blog '${blogObject.title}' deleted`
+        dispatch({
+          type: 'SHOW',
+          payload: {
+            class: 'notification',
+            message: `Blog '${blogObject.title}' deleted`
+          }
         })
+        setTimeout(() => {
+          dispatch({ type: 'HIDE' })
+        }, 3000)
       }
     } catch (exception) {
-      showNotification({ class: 'error', message: 'Deletion failed' })
+      dispatch({
+        type: 'SHOW',
+        payload: { class: 'error', message: 'Deletion failed' }
+      })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
     }
   }
 
@@ -69,12 +91,24 @@ const App = () => {
       setUser(loggedUser)
       setUsername('')
       setPassword('')
-      showNotification({
-        class: 'notification',
-        message: `Hello ${loggedUser.name}`
+      dispatch({
+        type: 'SHOW',
+        payload: {
+          class: 'notification',
+          message: `Hello ${loggedUser.name}`
+        }
       })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
     } catch (exception) {
-      showNotification({ class: 'error', message: 'Login failed' })
+      dispatch({
+        type: 'SHOW',
+        payload: { class: 'error', message: 'Login failed' }
+      })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
     }
   }
 
@@ -82,13 +116,6 @@ const App = () => {
     event.preventDefault()
     window.localStorage.removeItem('loggedUser')
     setUser(null)
-  }
-
-  const showNotification = (notification) => {
-    setNotification(notification)
-    setTimeout(() => {
-      setNotification({ class: null, message: null })
-    }, 3000)
   }
 
   const updateBlog = async (id, blogObject) => {
@@ -103,10 +130,7 @@ const App = () => {
     return (
       <div>
         <h1>Login to BlogList</h1>
-        <Notification
-          className={notification.class}
-          message={notification.message}
-        />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             Username
@@ -137,10 +161,7 @@ const App = () => {
   return (
     <div>
       <h1>Blogs</h1>
-      <Notification
-        className={notification.class}
-        message={notification.message}
-      />
+      <Notification />
       <div>
         <p>User: {user.name}</p>
         <button onClick={handleLogout}>Logout</button>
