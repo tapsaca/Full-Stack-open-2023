@@ -1,61 +1,73 @@
-import PropTypes from 'prop-types'
-import { useState } from 'react'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useRef } from 'react'
+import Togglable from './Togglable'
+import { useNotificationDispatch } from '../NotificationContext'
+import blogService from '../services/blogs'
 
-const BlogForm = ({ createBlog }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+const BlogForm = () => {
+  const dispatch = useNotificationDispatch()
+  const queryClient = useQueryClient()
+  const blogFormRef = useRef()
 
-  BlogForm.propTypes = {
-    createBlog: PropTypes.func.isRequired
-  }
+  const newBlogMutation = useMutation({
+    mutationFn: blogService.create,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['blogs'] })
+    }
+  })
 
-  const addBlog = (event) => {
+  const handleSubmit = (event) => {
     event.preventDefault()
-    createBlog({
-      title: title,
-      author: author,
-      url: url
-    })
-    setTitle('')
-    setAuthor('')
-    setUrl('')
+    const blog = {
+      title: event.target.title.value,
+      author: event.target.author.value,
+      url: event.target.url.value
+    }
+    event.target.title.value = ''
+    event.target.author.value = ''
+    event.target.url.value = ''
+    blogFormRef.current.toggleVisibility()
+    try {
+      newBlogMutation.mutate(blog)
+      dispatch({
+        type: 'SHOW',
+        payload: {
+          class: 'notification',
+          message: `Blog '${blog.title}' added`
+        }
+      })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
+    } catch (exception) {
+      dispatch({
+        type: 'SHOW',
+        payload: { class: 'error', message: 'Adding a new blog failed' }
+      })
+      setTimeout(() => {
+        dispatch({ type: 'HIDE' })
+      }, 3000)
+    }
   }
 
   return (
-    <div>
-      <h2>Create a new blog</h2>
-      <form onSubmit={addBlog}>
-        <div>
-          Title
-          <input
-            id="title"
-            type="text"
-            value={title}
-            onChange={({ target }) => setTitle(target.value)}
-          />
-        </div>
-        <div>
-          Author
-          <input
-            id="author"
-            type="text"
-            value={author}
-            onChange={({ target }) => setAuthor(target.value)}
-          />
-        </div>
-        <div>
-          URL
-          <input
-            id="url"
-            type="text"
-            value={url}
-            onChange={({ target }) => setUrl(target.value)}
-          />
-        </div>
-        <button type="submit">Save</button>
-      </form>
-    </div>
+    <Togglable buttonLabel="Add a new blog" ref={blogFormRef}>
+      <div>
+        <h2>Create a new blog</h2>
+        <form onSubmit={handleSubmit}>
+          <div>
+            Title <input name="title" />
+          </div>
+          <div>
+            Author <input name="author" />
+          </div>
+          <div>
+            URL <input name="url" />
+          </div>
+          <button type="submit">Save</button>
+        </form>
+      </div>
+    </Togglable>
   )
 }
 
