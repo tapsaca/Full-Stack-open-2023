@@ -2,9 +2,11 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
 import { useNotificationDispatch } from '../NotificationContext'
 import blogService from '../services/blogs'
+import { useUserValue } from '../UserContext'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   const dispatch = useNotificationDispatch()
+  const user = useUserValue()
   const [visible, setVisible] = useState(false)
   const showWhenOwner = {
     display: user.username === blog.user.username ? '' : 'none'
