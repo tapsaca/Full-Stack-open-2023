@@ -25,6 +25,19 @@ blogsRouter.post('/', async (request, response) => {
   response.status(201).json(savedBlog)
 })
 
+blogsRouter.post('/:id/comments', async (request, response) => {
+  const { comment } = request.body
+  if (!request.user) {
+    return response.status(401).json({
+      error: 'invalid or missing token'
+    })
+  }
+  const blog = await Blog.findById(request.params.id)
+  blog.comments = blog.comments.concat(comment)
+  const updatedBlog = await blog.save()
+  response.status(200).json(updatedBlog)
+})
+
 blogsRouter.delete('/:id', async (request, response) => {
   const blog = await Blog.findById(request.params.id)
   if (!request.user) {

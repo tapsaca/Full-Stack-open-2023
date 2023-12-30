@@ -50,6 +50,12 @@ const BlogDetails = () => {
       <div style={showWhenOwner}>
         <button onClick={handleDelete}>Delete</button>
       </div>
+      <h4>Comments</h4>
+      <ul>
+        {blog.comments.map((comment, i) => (
+          <li key={i}>{comment}</li>
+        ))}
+      </ul>
     </div>
   )
 }
