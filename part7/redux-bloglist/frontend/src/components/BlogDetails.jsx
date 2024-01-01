@@ -1,5 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux'
-import { deleteBlog, likeBlog } from '../reducers/blogReducer'
+import { addComment, deleteBlog, likeBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 import { useNavigate, useParams } from 'react-router-dom'
 
@@ -11,12 +11,20 @@ const BlogDetails = () => {
   const navigate = useNavigate()
   const user = useSelector((state) => state.user)
 
+  if (!blog) return null
+
   const showWhenOwner = {
     display: user.username === blog.user.username ? '' : 'none'
   }
 
-  const handleDelete = (event) => {
+  const handleComment = (event) => {
     event.preventDefault()
+    const comment = event.target.comment.value
+    event.target.comment.value = ''
+    dispatch(addComment(blog.id, comment))
+  }
+
+  const handleDelete = (event) => {
     event.preventDefault()
     try {
       dispatch(deleteBlog(blog.id))
@@ -37,8 +45,6 @@ const BlogDetails = () => {
     dispatch(likeBlog(blog))
   }
 
-  if (!blog) return null
-
   return (
     <div>
       <h3>{blog.title}</h3>
@@ -51,6 +57,10 @@ const BlogDetails = () => {
         <button onClick={handleDelete}>Delete</button>
       </div>
       <h4>Comments</h4>
+      <form onSubmit={handleComment}>
+        <input name="comment"></input>
+        <button type="submit">Add comment</button>
+      </form>
       <ul>
         {blog.comments.map((comment, i) => (
           <li key={i}>{comment}</li>

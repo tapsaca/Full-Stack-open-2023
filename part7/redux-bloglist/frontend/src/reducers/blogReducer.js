@@ -23,6 +23,13 @@ const blogSlice = createSlice({
   }
 })
 
+export const addComment = (id, comment) => {
+  return async (dispatch) => {
+    const commentedBlog = await blogService.createComment(id, comment)
+    dispatch(updateBlog(commentedBlog))
+  }
+}
+
 export const createBlog = (blog, user) => {
   return async (dispatch) => {
     const addedBlog = await blogService.create(blog)
