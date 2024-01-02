@@ -1,10 +1,11 @@
+import styled from 'styled-components'
 import { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { Route, Routes } from 'react-router-dom'
 import BlogDetails from './components/BlogDetails'
 import BlogList from './components/BlogList'
 import LoginForm from './components/LoginForm'
-import Navigation from './components/Navigation'
+import NavBar from './components/NavBar'
 import Notification from './components/Notification'
 import User from './components/User'
 import Users from './components/Users'
@@ -24,18 +25,18 @@ const App = () => {
 
   if (!user) {
     return (
-      <div>
+      <Page>
         <h1>Login to BlogList</h1>
         <Notification />
         <LoginForm />
-      </div>
+      </Page>
     )
   }
 
   return (
-    <div>
+    <Page>
       <h1>BlogList</h1>
-      <Navigation />
+      <NavBar />
       <Notification />
       <Routes>
         <Route path="/" element={<BlogList />} />
@@ -43,8 +44,13 @@ const App = () => {
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
       </Routes>
-    </div>
+    </Page>
   )
 }
 
 export default App
+
+const Page = styled.div`
+  padding: 1em;
+  background: papayawhip;
+`
