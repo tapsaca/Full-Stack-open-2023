@@ -2,7 +2,7 @@ import { useRef } from 'react'
 import { useDispatch } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-import { Button, Input } from './styled'
+import { StyledButton, StyledForm, StyledInput } from './styles'
 import Togglable from './Togglable'
 
 const BlogForm = ({ user }) => {
@@ -42,18 +42,21 @@ const BlogForm = ({ user }) => {
     <Togglable buttonLabel="Add a new blog" ref={blogFormRef}>
       <div>
         <h2>Create a new blog</h2>
-        <form onSubmit={handleSubmit}>
+        <StyledForm onSubmit={handleSubmit}>
           <div>
-            Title <Input name="title" />
+            Title
+            <StyledInput name="title" />
           </div>
           <div>
-            Author <Input name="author" />
+            Author
+            <StyledInput name="author" />
           </div>
           <div>
-            URL <Input name="url" />
+            URL
+            <StyledInput name="url" />
           </div>
-          <Button type="submit">Save</Button>
-        </form>
+          <StyledButton type="submit">Save</StyledButton>
+        </StyledForm>
       </div>
     </Togglable>
   )

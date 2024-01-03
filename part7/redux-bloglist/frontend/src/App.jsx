@@ -35,7 +35,7 @@ const App = () => {
 
   return (
     <Page>
-      <h1>BlogList</h1>
+      <Header>BlogList</Header>
       <NavBar />
       <Notification />
       <Routes>
@@ -50,7 +50,13 @@ const App = () => {
 
 export default App
 
+const Header = styled.h1`
+  margin-top: 0;
+`
+
 const Page = styled.div`
+  background: #f9ebde;
+  color: #815854;
+  height: 100vh;
   padding: 1em;
-  background: papayawhip;
 `

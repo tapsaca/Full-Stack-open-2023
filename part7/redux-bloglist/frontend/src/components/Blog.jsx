@@ -1,15 +1,21 @@
-import { Link } from 'react-router-dom'
+import styled from 'styled-components'
+import { StyledLink } from './styles'
 
-const Blog = ({ blog, user }) => {
+const Blog = ({ blog }) => {
   return (
-    <div className="blog">
-      <div>
-        <Link to={`/blogs/${blog.id}`}>
-          {blog.title}, {blog.author}{' '}
-        </Link>
-      </div>
-    </div>
+    <Wrapper>
+      <StyledLink to={`/blogs/${blog.id}`}>
+        {blog.title}, {blog.author}
+      </StyledLink>
+    </Wrapper>
   )
 }
 
 export default Blog
+
+const Wrapper = styled.div`
+  border: 1px solid;
+  border-radius: 0.25em;
+  margin: 0.5em;
+  padding: 0.5em;
+`
