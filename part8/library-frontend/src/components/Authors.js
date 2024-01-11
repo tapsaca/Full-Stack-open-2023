@@ -13,9 +13,7 @@ const ALL_AUTHORS = gql`
 const Authors = () => {
   const authors = useQuery(ALL_AUTHORS)
 
-  if (authors.loading) {
-    return null
-  }
+  if (authors.loading) return null
 
   return (
     <div>
