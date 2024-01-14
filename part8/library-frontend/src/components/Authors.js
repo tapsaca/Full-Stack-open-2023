@@ -41,7 +41,11 @@ const Authors = () => {
       <form onSubmit={handleSubmit}>
         <div>
           name
-          <input name="name" />
+          <select name="name">
+            {authors.data.allAuthors.map((a) => (
+              <option key={a.name}>{a.name}</option>
+            ))}
+          </select>
         </div>
         <div>
           born
