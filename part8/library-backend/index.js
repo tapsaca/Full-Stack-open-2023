@@ -1,10 +1,12 @@
 const { ApolloServer } = require('@apollo/server')
 const { startStandaloneServer } = require('@apollo/server/standalone')
+const { GraphQLError } = require('graphql')
+const jwt = require('jsonwebtoken')
 const mongoose = require('mongoose')
 mongoose.set('strictQuery', false)
 const Author = require('./models/author')
 const Book = require('./models/book')
-const { GraphQLError } = require('graphql')
+const User = require('./models/user')
 
 require('dotenv').config()
 const MONGODB_URI = process.env.MONGODB_URI
@@ -33,11 +35,22 @@ const typeDefs = `
     id: ID!
   }
 
+  type Token {
+    value: String!
+  }
+
+  type User {
+    username: String!
+    favoriteGenre: String!
+    id: ID!
+  }
+
   type Query {
     allAuthors: [Author!]!
     allBooks(author: String, genre: String): [Book!]!
     authorCount: Int!
     bookCount: Int!
+    me: User
   }
 
   type Mutation {
@@ -47,16 +60,31 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book
+    createUser(
+      username: String!
+      favoriteGenre: String!
+    ): User
     editAuthor(
       name: String!
       setBornTo: Int!
     ): Author
+    login(
+      username: String!
+      password: String!
+    ): Token
   }
 `
 
 const resolvers = {
   Mutation: {
-    addBook: async (root, args) => {
+    addBook: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError('Invalid credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })
+      }
       let author = await Author.findOne({ name: args.author })
       if (!author) {
         author = new Author({ name: args.author })
@@ -86,7 +114,32 @@ const resolvers = {
       }
       return book
     },
-    editAuthor: async (root, args) => {
+    createUser: async (root, args) => {
+      const user = new User({
+        username: args.username,
+        favoriteGenre: args.favoriteGenre
+      })
+      try {
+        user.save()
+      } catch (error) {
+        throw new GraphQLError('Creating a new user failed', {
+          extensions: {
+            code: 'BAD_USER_INPUT',
+            invalidArgs: args.username,
+            error
+          }
+        })
+      }
+      return user
+    },
+    editAuthor: async (root, args, { currentUser }) => {
+      if (!currentUser) {
+        throw new GraphQLError('Invalid credentials', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })
+      }
       const author = await Author.findOne({ name: args.name })
       if (!author) {
         return null
@@ -104,6 +157,21 @@ const resolvers = {
         })
       }
       return author
+    },
+    login: async (root, args) => {
+      const user = await User.findOne({ username: args.username })
+      if (!user || args.password !== 'secret') {
+        throw new GraphQLError('Invalid username or password', {
+          extensions: {
+            code: 'BAD_USER_INPUT'
+          }
+        })
+      }
+      const userForToken = {
+        username: user.username,
+        id: user._id
+      }
+      return { value: jwt.sign(userForToken, process.env.SECRET) }
     }
   },
   Query: {
@@ -124,7 +192,10 @@ const resolvers = {
       return Book.find({}).populate('author')
     },
     authorCount: async () => Author.countDocuments({}),
-    bookCount: async () => Book.countDocuments({})
+    bookCount: async () => Book.countDocuments({}),
+    me: async (root, args, context) => {
+      return context.currentUser
+    }
   },
   Author: {
     bookCount: async (root) => {
@@ -139,7 +210,15 @@ const server = new ApolloServer({
 })
 
 startStandaloneServer(server, {
-  listen: { port: 4000 }
+  listen: { port: 4000 },
+  context: async ({ req, res }) => {
+    const auth = req ? req.headers.authorization : null
+    if (auth && auth.startsWith('Bearer ')) {
+      const decodedToken = jwt.verify(auth.substring(7), process.env.SECRET)
+      const currentUser = await User.findById(decodedToken.id)
+      return { currentUser }
+    }
+  }
 }).then(({ url }) => {
   console.log(`Server ready at ${url}`)
 })
