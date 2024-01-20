@@ -1,13 +1,20 @@
 import { useNavigate } from 'react-router-dom'
 
-const Navigation = () => {
+const Navigation = ({ logout, token }) => {
   const navigate = useNavigate()
 
   return (
     <div>
       <button onClick={() => navigate('/')}>authors</button>
       <button onClick={() => navigate('/books')}>books</button>
-      <button onClick={() => navigate('/add')}>add book</button>
+      {token ? (
+        <>
+          <button onClick={() => navigate('/add')}>add book</button>
+          <button onClick={logout}>logout</button>
+        </>
+      ) : (
+        <button onClick={() => navigate('/login')}>login</button>
+      )}
     </div>
   )
 }
