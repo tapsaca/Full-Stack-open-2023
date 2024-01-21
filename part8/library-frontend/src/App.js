@@ -1,14 +1,16 @@
 import { useApolloClient } from '@apollo/client'
 import { useEffect, useState } from 'react'
-import { Route, Routes } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router-dom'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
 import NewBook from './components/NewBook'
+import Recommendations from './components/Recommendations'
 
 const App = () => {
   const client = useApolloClient()
+  const navigate = useNavigate()
   const [token, setToken] = useState(null)
 
   useEffect(() => {
@@ -22,6 +24,7 @@ const App = () => {
     setToken(null)
     localStorage.clear()
     client.resetStore()
+    navigate('/')
   }
 
   return (
@@ -35,6 +38,7 @@ const App = () => {
           path="/login"
           element={<LoginForm token={token} setToken={setToken} />}
         />
+        <Route path="/recommendations" element={<Recommendations />} />
       </Routes>
     </div>
   )

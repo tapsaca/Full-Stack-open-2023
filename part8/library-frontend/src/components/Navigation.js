@@ -10,6 +10,9 @@ const Navigation = ({ logout, token }) => {
       {token ? (
         <>
           <button onClick={() => navigate('/add')}>add book</button>
+          <button onClick={() => navigate('/recommendations')}>
+            recommendations
+          </button>
           <button onClick={logout}>logout</button>
         </>
       ) : (
