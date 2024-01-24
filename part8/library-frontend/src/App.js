@@ -1,13 +1,28 @@
 import { useApolloClient, useSubscription } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-import { BOOK_ADDED } from './queries'
+import { ALL_BOOKS, BOOK_ADDED } from './queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
 import Navigation from './components/Navigation'
 import NewBook from './components/NewBook'
 import Recommendations from './components/Recommendations'
+
+export const updateCache = (cache, query, addedBook) => {
+  const uniqByTitle = (a) => {
+    let seen = new Set()
+    return a.filter((item) => {
+      let k = item.title
+      return seen.has(k) ? false : seen.add(k)
+    })
+  }
+  cache.updateQuery(query, ({ allBooks }) => {
+    return {
+      allBooks: uniqByTitle(allBooks.concat(addedBook))
+    }
+  })
+}
 
 const App = () => {
   const client = useApolloClient()
@@ -22,8 +37,10 @@ const App = () => {
   }, [])
 
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      window.alert(`${data.data.bookAdded.title} added to books!`)
+    onData: ({ data, client }) => {
+      const addedBook = data.data.bookAdded
+      window.alert(`${addedBook.title} added to books!`)
+      updateCache(client.cache, { query: ALL_BOOKS }, addedBook)
     }
   })
 
