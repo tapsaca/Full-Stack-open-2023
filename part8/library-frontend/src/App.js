@@ -1,7 +1,7 @@
-import { useApolloClient, useSubscription } from '@apollo/client'
+import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
 import { useEffect, useState } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
-import { ALL_BOOKS, BOOK_ADDED } from './queries'
+import { ALL_BOOKS, BOOK_ADDED, USER } from './queries'
 import Authors from './components/Authors'
 import Books from './components/Books'
 import LoginForm from './components/LoginForm'
@@ -28,6 +28,7 @@ const App = () => {
   const client = useApolloClient()
   const navigate = useNavigate()
   const [token, setToken] = useState(null)
+  const user = useQuery(USER)
 
   useEffect(() => {
     const userToken = localStorage.getItem('library-user-token')
@@ -51,6 +52,8 @@ const App = () => {
     navigate('/')
   }
 
+  if (user.loading) return null
+
   return (
     <div>
       <Navigation logout={handleLogout} token={token} />
@@ -58,11 +61,11 @@ const App = () => {
         <Route path="/" element={<Authors />} />
         <Route path="/books" element={<Books />} />
         <Route path="/add" element={<NewBook />} />
+        <Route path="/login" element={<LoginForm setToken={setToken} />} />
         <Route
-          path="/login"
-          element={<LoginForm token={token} setToken={setToken} />}
+          path="/recommendations"
+          element={<Recommendations user={user.data.me} />}
         />
-        <Route path="/recommendations" element={<Recommendations />} />
       </Routes>
     </div>
   )

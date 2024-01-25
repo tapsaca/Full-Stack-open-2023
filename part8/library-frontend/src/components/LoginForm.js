@@ -1,8 +1,11 @@
-import { useMutation } from '@apollo/client'
+import { useApolloClient, useMutation } from '@apollo/client'
 import { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { LOGIN } from '../queries'
 
 const LoginForm = ({ setToken }) => {
+  const client = useApolloClient()
+  const navigate = useNavigate()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [login, result] = useMutation(LOGIN, {
@@ -16,8 +19,10 @@ const LoginForm = ({ setToken }) => {
       const token = result.data.login.value
       localStorage.setItem('library-user-token', token)
       setToken(token)
+      client.resetStore()
+      navigate('/')
     }
-  }, [result.data, setToken])
+  }, [client, navigate, result.data, setToken])
 
   const handleSubmit = async (event) => {
     event.preventDefault()

@@ -69,18 +69,19 @@ export const EDIT_AUTHOR = gql`
   }
 `
 
-export const FAVORITE_GENRE = gql`
-  query {
-    me {
-      favoriteGenre
-    }
-  }
-`
-
 export const LOGIN = gql`
   mutation login($username: String!, $password: String!) {
     login(username: $username, password: $password) {
       value
+    }
+  }
+`
+
+export const USER = gql`
+  query {
+    me {
+      username
+      favoriteGenre
     }
   }
 `

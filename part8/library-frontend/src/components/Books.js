@@ -3,12 +3,17 @@ import { useState } from 'react'
 import { ALL_BOOKS } from '../queries'
 
 const Books = () => {
-  const books = useQuery(ALL_BOOKS)
   const [filter, setFilter] = useState('')
+  const [genres, setGenres] = useState([])
+  const books = useQuery(ALL_BOOKS, {
+    variables: { genre: filter }
+  })
 
   if (books.loading) return null
 
-  const genres = [...new Set(books.data.allBooks.map((b) => b.genres).flat())]
+  if (!genres.length) {
+    setGenres([...new Set(books.data.allBooks.map((b) => b.genres).flat())])
+  }
 
   return (
     <div>
@@ -21,15 +26,13 @@ const Books = () => {
             <th>author</th>
             <th>published</th>
           </tr>
-          {books.data.allBooks
-            .filter((b) => (!filter ? true : b.genres.includes(filter)))
-            .map((b) => (
-              <tr key={b.title}>
-                <td>{b.title}</td>
-                <td>{b.author.name}</td>
-                <td>{b.published}</td>
-              </tr>
-            ))}
+          {books.data.allBooks.map((b) => (
+            <tr key={b.title}>
+              <td>{b.title}</td>
+              <td>{b.author.name}</td>
+              <td>{b.published}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
       <div>
