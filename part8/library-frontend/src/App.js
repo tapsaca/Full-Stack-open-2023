@@ -28,6 +28,7 @@ const App = () => {
   const client = useApolloClient()
   const navigate = useNavigate()
   const [token, setToken] = useState(null)
+  const books = useQuery(ALL_BOOKS)
   const user = useQuery(USER)
 
   useEffect(() => {
@@ -52,14 +53,14 @@ const App = () => {
     navigate('/')
   }
 
-  if (user.loading) return null
+  if (books.loading || user.loading) return null
 
   return (
     <div>
       <Navigation logout={handleLogout} token={token} />
       <Routes>
         <Route path="/" element={<Authors />} />
-        <Route path="/books" element={<Books />} />
+        <Route path="/books" element={<Books books={books} />} />
         <Route path="/add" element={<NewBook />} />
         <Route path="/login" element={<LoginForm setToken={setToken} />} />
         <Route
