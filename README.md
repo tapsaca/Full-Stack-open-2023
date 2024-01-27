@@ -1,5 +1,9 @@
 # [Full Stack open](https://fullstackopen.com/en)
 
+This repository contains my solutions to the course exercises.
+
+The course itself covers modern JavaScript-based web development by introducing you to React, Redux, Node.js, MongoDB, GraphQL and TypeScript.
+
 ## [Part 0: Fundamentals of Web apps](https://fullstackopen.com/en/part0)
 
 ## [Part 1: Introduction to React](https://fullstackopen.com/en/part1)
