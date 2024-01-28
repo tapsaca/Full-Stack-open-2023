@@ -21,3 +21,5 @@ The course itself covers modern JavaScript-based web development by introducing 
 ## [Part 7: React router, custom hooks, styling app with CSS and webpack](https://fullstackopen.com/en/part7)
 
 ## [Part 8: GraphQL](https://fullstackopen.com/en/part8)
+
+## [Part 9: TypeScript](https://fullstackopen.com/en/part9)
