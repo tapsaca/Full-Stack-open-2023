@@ -6,6 +6,8 @@ The course itself covers modern JavaScript-based web development by introducing 
 
 ## [Part 0: Fundamentals of Web apps](https://fullstackopen.com/en/part0)
 
+The exercises in this part required the creation of sequence diagrams. The first diagram depicts a situation where the user creates a new note on page https://studies.cs.helsinki.fi/exampleapp/notes. The second diagram depicts a situtation where the user goes to the single-page-app version of the notes app at https://studies.cs.helsinki.fi/exampleapp/spa. The third diagram depicts the creation of a note using the single-page version of the app.
+
 ## [Part 1: Introduction to React](https://fullstackopen.com/en/part1)
 
 ## [Part 2: Communicating with server](https://fullstackopen.com/en/part2)
