@@ -8,7 +8,7 @@ interface ExerciseResults {
   average: number
 }
 
-const calculateExercises = (
+export const calculateExercises = (
   hours: number[],
   target: number
 ): ExerciseResults => {
@@ -37,4 +37,28 @@ const calculateExercises = (
   }
 }
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2))
+const parseArguments = (args: String[]) => {
+  if (args.length < 4) throw new Error('Provide at least two arguments.')
+  if (isNaN(Number(args[2])))
+    throw new Error('Provided arguments should be numbers')
+  let hours: number[] = []
+  for (let i = 3; i < args.length; i++) {
+    if (isNaN(Number(args[i]))) {
+      throw new Error('Provided arguments should be numbers.')
+    }
+    hours.push(Number(args[i]))
+  }
+  return {
+    target: Number(args[2]),
+    hours
+  }
+}
+
+try {
+  const { target, hours } = parseArguments(process.argv)
+  console.log(calculateExercises(hours, target))
+} catch (error: unknown) {
+  if (error instanceof Error) {
+    console.log(`Error: ${error.message}`)
+  }
+}
