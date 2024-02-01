@@ -8,6 +8,10 @@ const schema = new mongoose.Schema({
     unique: true,
     minlength: 4
   },
+  bookCount: {
+    type: Number,
+    required: true
+  },
   born: {
     type: Number
   }

@@ -19,7 +19,7 @@ const resolvers = {
       }
       let author = await Author.findOne({ name: args.author })
       if (!author) {
-        author = new Author({ name: args.author })
+        author = new Author({ name: args.author, bookCount: 1 })
         try {
           await author.save()
         } catch (error) {
@@ -31,6 +31,9 @@ const resolvers = {
             }
           })
         }
+      } else {
+        author.bookCount += 1
+        await author.save()
       }
       const book = new Book({ ...args, author })
       try {
@@ -130,11 +133,6 @@ const resolvers = {
     bookCount: async () => Book.countDocuments({}),
     me: async (root, args, context) => {
       return context.currentUser
-    }
-  },
-  Author: {
-    bookCount: async (root) => {
-      return Book.countDocuments({ author: root.id })
     }
   },
   Subscription: {
