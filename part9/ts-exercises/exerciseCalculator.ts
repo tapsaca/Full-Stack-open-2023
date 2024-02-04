@@ -37,7 +37,7 @@ export const calculateExercises = (
   };
 };
 
-const parseArguments = (args: string[]) => {
+export const parseArguments = (args: string[]) => {
   if (args.length < 4) throw new Error('Provide at least two arguments.');
   if (isNaN(Number(args[2])))
     throw new Error('Provided arguments should be numbers');
