@@ -1,11 +1,11 @@
 interface ExerciseResults {
-  periodLength: number
-  trainingDays: number
-  success: boolean
-  rating: number
-  ratingDescription: string
-  target: number
-  average: number
+  periodLength: number;
+  trainingDays: number;
+  success: boolean;
+  rating: number;
+  ratingDescription: string;
+  target: number;
+  average: number;
 }
 
 export const calculateExercises = (
@@ -13,18 +13,18 @@ export const calculateExercises = (
   target: number
 ): ExerciseResults => {
   const average =
-    hours.reduce((sum, currentValue) => sum + currentValue, 0) / hours.length
-  let rating: number
-  let ratingDescription
+    hours.reduce((sum, currentValue) => sum + currentValue, 0) / hours.length;
+  let rating: number;
+  let ratingDescription;
   if (average >= target) {
-    rating = 3
-    ratingDescription = 'good'
+    rating = 3;
+    ratingDescription = 'good';
   } else if (average >= target * 0.75) {
-    rating = 2
-    ratingDescription = 'meh'
+    rating = 2;
+    ratingDescription = 'meh';
   } else {
-    rating = 1
-    ratingDescription = 'bad'
+    rating = 1;
+    ratingDescription = 'bad';
   }
   return {
     periodLength: hours.length,
@@ -34,31 +34,31 @@ export const calculateExercises = (
     ratingDescription: ratingDescription,
     target: target,
     average: average
-  }
-}
+  };
+};
 
-const parseArguments = (args: String[]) => {
-  if (args.length < 4) throw new Error('Provide at least two arguments.')
+const parseArguments = (args: string[]) => {
+  if (args.length < 4) throw new Error('Provide at least two arguments.');
   if (isNaN(Number(args[2])))
-    throw new Error('Provided arguments should be numbers')
-  let hours: number[] = []
+    throw new Error('Provided arguments should be numbers');
+  const hours: number[] = [];
   for (let i = 3; i < args.length; i++) {
     if (isNaN(Number(args[i]))) {
-      throw new Error('Provided arguments should be numbers.')
+      throw new Error('Provided arguments should be numbers.');
     }
-    hours.push(Number(args[i]))
+    hours.push(Number(args[i]));
   }
   return {
     target: Number(args[2]),
     hours
-  }
-}
+  };
+};
 
 try {
-  const { target, hours } = parseArguments(process.argv)
-  console.log(calculateExercises(hours, target))
+  const { target, hours } = parseArguments(process.argv);
+  console.log(calculateExercises(hours, target));
 } catch (error: unknown) {
   if (error instanceof Error) {
-    console.log(`Error: ${error.message}`)
+    console.log(`Error: ${error.message}`);
   }
 }
