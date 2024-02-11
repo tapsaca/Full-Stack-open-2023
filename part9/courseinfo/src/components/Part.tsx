@@ -1,49 +1,45 @@
 import { CoursePart } from '../types';
 
-interface PartProps {
-  part: CoursePart;
-}
-
-const Part = (props: PartProps) => {
+const Part = ({ part } : { part: CoursePart }) => {
   const assertNever = (value: never): never => {
     throw new Error(
       `Unhandled discriminated union member: ${JSON.stringify(value)}`
     );
   }
 
-  switch (props.part.kind) {
+  switch (part.kind) {
     case 'basic':
       return (
         <div>
-          <h3>{props.part.name} {props.part.exerciseCount}</h3>
-          <div><i>{props.part.description}</i></div>
+          <h3>{part.name} {part.exerciseCount}</h3>
+          <div><i>{part.description}</i></div>
         </div>
       );
     case 'group':
       return (
         <div>
-          <h3>{props.part.name} {props.part.exerciseCount}</h3>
-          <div>Project exercises {props.part.groupProjectCount}</div>
+          <h3>{part.name} {part.exerciseCount}</h3>
+          <div>Project exercises {part.groupProjectCount}</div>
         </div>
       );
     case 'background':
       return (
         <div>
-          <h3>{props.part.name} {props.part.exerciseCount}</h3>
-          <div><i>{props.part.description}</i></div>
-          <div>Background material at {props.part.backgroundMaterial}</div>
+          <h3>{part.name} {part.exerciseCount}</h3>
+          <div><i>{part.description}</i></div>
+          <div>Background material at {part.backgroundMaterial}</div>
         </div>
       );
     case 'special':
       return (
         <div>
-          <h3>{props.part.name} {props.part.exerciseCount}</h3>
-          <div><i>{props.part.description}</i></div>
-          <div>Required skills: {props.part.requirements.map((requirement) => requirement).join(', ')}</div>
+          <h3>{part.name} {part.exerciseCount}</h3>
+          <div><i>{part.description}</i></div>
+          <div>Required skills: {part.requirements.map((requirement) => requirement).join(', ')}</div>
         </div>
       );
     default:
-      return assertNever(props.part);
+      return assertNever(part);
   }
 };
 
