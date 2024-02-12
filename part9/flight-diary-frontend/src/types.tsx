@@ -4,3 +4,9 @@ export interface DiaryEntry {
   weather: string;
   visibility: string;
 }
+
+interface DiaryEntryComment extends DiaryEntry {
+  comment: string;
+}
+
+export type NewEntry = Omit<DiaryEntryComment, 'id'>
