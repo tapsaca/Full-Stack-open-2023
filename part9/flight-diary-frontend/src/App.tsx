@@ -47,13 +47,35 @@ const App = () => {
       <ErrorMessage message={errorMessage} />
       <form onSubmit={addEntry}>
         <div>
-          Date <input value={date} onChange={(event) => setDate(event.target.value)} />
+          Date <input type='date' value={date} onChange={(event) => setDate(event.target.value)} />
         </div>
         <div>
-          Visibility <input value={visibility} onChange={(event) => setVisibility(event.target.value)} />
+          <fieldset>
+            <legend>Visibility:</legend>
+            <input type='radio' name='visibility' id='great' onChange={() => setVisibility('great')} />
+            <label htmlFor='great'>Great</label>
+            <input type='radio' name='visibility' id='good' onChange={() => setVisibility('good')} />
+            <label htmlFor='good'>Good</label>
+            <input type='radio' name='visibility' id='ok' onChange={() => setVisibility('ok')} />
+            <label htmlFor='ok'>Ok</label>
+            <input type='radio' name='visibility' id='poor' onChange={() => setVisibility('poor')} />
+            <label htmlFor='poor'>Poor</label>
+          </fieldset>
         </div>
         <div>
-          Weather <input value={weather} onChange={(event) => setWeather(event.target.value)} />
+        <fieldset>
+            <legend>Weather:</legend>
+            <input type='radio' name='weather' id='sunny' onChange={() => setWeather('sunny')} />
+            <label htmlFor='sunny'>Sunny</label>
+            <input type='radio' name='weather' id='rainy' onChange={() => setWeather('rainy')} />
+            <label htmlFor='rainy'>Rainy</label>
+            <input type='radio' name='weather' id='cloudy' onChange={() => setWeather('cloudy')} />
+            <label htmlFor='cloudy'>Cloudy</label>
+            <input type='radio' name='weather' id='stormy' onChange={() => setWeather('stormy')} />
+            <label htmlFor='stormy'>Stormy</label>
+            <input type='radio' name='weather' id='windy' onChange={() => setWeather('windy')} />
+            <label htmlFor='windy'>Windy</label>
+          </fieldset>
         </div>
         <div>
           Comment <input value={comment} onChange={(event) => setComment(event.target.value)} />
