@@ -4,7 +4,7 @@ export const toNewPatientData = (object: unknown): NewPatientData => {
   if (!object || typeof object !== 'object') {
     throw new Error('Incorrect or missing data');
   }
-  if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object) {
+  if ('name' in object && 'dateOfBirth' in object && 'ssn' in object && 'gender' in object && 'occupation' in object && 'entries' in object) {
     const newPatient = {
       name: parseName(object.name),
       dateOfBirth: parseDate(object.dateOfBirth),
