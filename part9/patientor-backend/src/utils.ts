@@ -1,4 +1,4 @@
-import { Gender, NewPatientData } from "./types";
+import { Entry, Gender, NewPatientData } from "./types";
 
 export const toNewPatientData = (object: unknown): NewPatientData => {
   if (!object || typeof object !== 'object') {
@@ -11,7 +11,7 @@ export const toNewPatientData = (object: unknown): NewPatientData => {
       ssn: parseSsn(object.ssn),
       gender: parseGender(object.gender),
       occupation: parseOccupation(object.occupation),
-      entries: []
+      entries: parseEntries(object.entries)
     };
     return newPatient;
   }
@@ -53,8 +53,22 @@ const parseOccupation = (occupation: unknown): string => {
   return occupation;
 };
 
+const parseEntries = (entries: unknown): Entry[] => {
+  if (!isEntryArray(entries)) {
+    throw new Error('Incorrect or missing entries');
+  }
+  return entries;
+};
+
 const isDate = (date: string): boolean => {
   return Boolean(Date.parse(date));
+};
+
+const isEntryArray = (entries: unknown): entries is Entry[] => {
+  if (!Array.isArray(entries)) {
+    return false;
+  }
+  return entries.every((entry) => (entry as Entry).type === 'HealthCheck' || (entry as Entry).type === 'Hospital' || (entry as Entry).type === 'OccupationalHealthcare');
 };
 
 const isGender = (gender: string): gender is Gender => {
