@@ -25,6 +25,16 @@ const PatientPage = () => {
       <h2>{patient.name} <GenderIcon gender={patient.gender} /></h2>
       <div>SSN: {patient.ssn}</div>
       <div>Occupation: {patient.occupation}</div>
+      <h3>Entries</h3>
+      {patient.entries.map((entry) => (
+        <div key={entry.id}>
+          {entry.date} <i>{entry.description}</i>
+          {entry.diagnosisCodes
+            ? <ul>{entry.diagnosisCodes.map((code) => <li key={code}>{code}</li>)}</ul>
+            : null
+          }
+        </div>
+      ))}
     </div>
   );
 };
