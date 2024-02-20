@@ -1,7 +1,9 @@
+import { Stack } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useMatch } from 'react-router-dom';
 import { Diagnosis, Patient } from '../../types';
 import patientService from '../../services/patients';
+import EntryDetails from './EntryDetails';
 import GenderIcon from './GenderIcon';
 
 interface Props {
@@ -29,16 +31,12 @@ const PatientPage = ({ diagnoses }: Props) => {
       <h2>{patient.name} <GenderIcon gender={patient.gender} /></h2>
       <div>SSN: {patient.ssn}</div>
       <div>Occupation: {patient.occupation}</div>
-      <h3>Entries</h3>
-      {patient.entries.map((entry) => (
-        <div key={entry.id}>
-          {entry.date} <i>{entry.description}</i>
-          {entry.diagnosisCodes
-            ? <ul>{entry.diagnosisCodes.map((code) => <li key={code}>{code} {diagnoses.find((d) => d.code === code)?.name}</li>)}</ul>
-            : null
-          }
-        </div>
-      ))}
+      {patient.entries.length > 0 ? <h3>Entries</h3> : null}
+      <Stack spacing={2}>
+        {patient.entries.map((entry) => (
+          <EntryDetails key={entry.id} diagnoses={diagnoses} entry={entry} />
+        ))}
+      </Stack>
     </div>
   );
 };
