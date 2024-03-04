@@ -25,3 +25,7 @@ The exercises in this part required the creation of sequence diagrams. The first
 ## [Part 8: GraphQL](https://fullstackopen.com/en/part8)
 
 ## [Part 9: TypeScript](https://fullstackopen.com/en/part9)
+
+## [Part 10: React Native](https://fullstackopen.com/en/part10)
+
+Another repository was created for this part: https://github.com/tapsaca/rate-repository-app
