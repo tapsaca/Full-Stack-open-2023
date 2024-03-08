@@ -29,3 +29,9 @@ The exercises in this part required the creation of sequence diagrams. The first
 ## [Part 10: React Native](https://fullstackopen.com/en/part10)
 
 Another repository was created for this part: https://github.com/tapsaca/rate-repository-app
+
+## [Part 11: CI/CD](https://fullstackopen.com/en/part11)
+
+## [Part 12: Containers](https://fullstackopen.com/en/part12)
+
+## [Part 13: Using relational databases](https://fullstackopen.com/en/part13)
