@@ -34,4 +34,6 @@ Another repository was created for this part: https://github.com/tapsaca/rate-re
 
 ## [Part 12: Containers](https://fullstackopen.com/en/part12)
 
+Another repository was created for this part: https://github.com/tapsaca/full-stack-open-containers 
+
 ## [Part 13: Using relational databases](https://fullstackopen.com/en/part13)
