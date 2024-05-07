@@ -61,15 +61,17 @@ const PatientPage = ({ diagnoses }: Props) => {
       <div>
         {showForm
           ? <AddEntryForm onSubmit={submitNewEntry} setShowForm={setShowForm} />
-          : <Button variant="contained" onClick={() => setShowForm(true)}>Add New Entry</Button>
+          : <Button style={{ marginTop: 20 }} variant="contained" onClick={() => setShowForm(true)}>Add New Entry</Button>
         }
       </div>
-      {patient.entries.length > 0 ? <h3>Entries</h3> : null}
-      <Stack spacing={2}>
-        {patient.entries.map((entry) => (
-          <EntryDetails key={entry.id} diagnoses={diagnoses} entry={entry} />
-        ))}
-      </Stack>
+      <div>
+        <Stack style={{ marginTop: 20 }} spacing={2}>
+          {patient.entries.length > 0 ? <h3>Entries</h3> : null}
+          {patient.entries.map((entry) => (
+            <EntryDetails key={entry.id} diagnoses={diagnoses} entry={entry} />
+          ))}
+        </Stack>
+      </div>
     </div>
   );
 };

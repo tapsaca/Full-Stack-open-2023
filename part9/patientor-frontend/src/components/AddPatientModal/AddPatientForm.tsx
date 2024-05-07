@@ -51,18 +51,21 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
     <div>
       <form onSubmit={addPatient}>
         <TextField
+          style={{ marginTop: 10 }}
           label="Name"
           fullWidth 
           value={name}
           onChange={({ target }) => setName(target.value)}
         />
         <TextField
+          style={{ marginTop: 10 }}
           label="Social security number"
           fullWidth
           value={ssn}
           onChange={({ target }) => setSsn(target.value)}
         />
         <TextField
+          style={{ marginTop: 10 }}
           label="Date of birth"
           placeholder="YYYY-MM-DD"
           fullWidth
@@ -70,6 +73,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           onChange={({ target }) => setDateOfBirth(target.value)}
         />
         <TextField
+          style={{ marginTop: 10 }}
           label="Occupation"
           fullWidth
           value={occupation}
@@ -78,7 +82,6 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
 
         <InputLabel style={{ marginTop: 20 }}>Gender</InputLabel>
         <Select
-          label="Gender"
           fullWidth
           value={gender}
           onChange={onGenderChange}
@@ -98,7 +101,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
             <Button
               color="secondary"
               variant="contained"
-              style={{ float: "left" }}
+              style={{ float: "left", marginTop: 10 }}
               type="button"
               onClick={onCancel}
             >
@@ -107,9 +110,7 @@ const AddPatientForm = ({ onCancel, onSubmit }: Props) => {
           </Grid>
           <Grid item>
             <Button
-              style={{
-                float: "right",
-              }}
+              style={{ float: "right", marginTop: 10 }}
               type="submit"
               variant="contained"
             >
