@@ -60,7 +60,7 @@ const PatientPage = ({ diagnoses }: Props) => {
       {error && <Alert severity="error">{error}</Alert>}
       <div>
         {showForm
-          ? <AddEntryForm onSubmit={submitNewEntry} setShowForm={setShowForm} />
+          ? <AddEntryForm diagnoses={diagnoses} onSubmit={submitNewEntry} setShowForm={setShowForm} />
           : <Button style={{ marginTop: 20 }} variant="contained" onClick={() => setShowForm(true)}>Add New Entry</Button>
         }
       </div>
